@@ -1,21 +1,29 @@
+pub mod css;
 pub mod dom;
 pub mod html;
 
+use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::env;
+
+fn parse_css() {
+    let mut source = File::open("test.css").unwrap();
+    let mut css = String::new();
+    source.read_to_string(&mut css).unwrap();
+    let parsed = css::parse(css);
+}
+
+fn parse_html() {
+    let mut html_file = File::open("test.html").unwrap();
+    let mut contents = String::new();
+    html_file.read_to_string(&mut contents).unwrap();
+    let root = html::parse(contents);
+}
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    // TODO: implement flags to allow user to pass in file names
+    // let args: Vec<String> = env::args().collect();
 
-    let mut f = File::open(&args[1]).unwrap(); // ? replaces .expect; on panic!, ? returns error value from current function
-
-    let mut contents = String::new();
-    f.read_to_string(&mut contents).unwrap();
-    
-    println!("{}", contents);
-
-    let root = html::parse(contents);
-
-    println!("{:?}", root.node_type);
+    parse_html();
+    parse_css();
 }

@@ -2,7 +2,10 @@ use dom;
 use std::collections::HashMap;
 
 pub fn parse(source: String) -> dom::Node {
-    let mut nodes = Parser { pos: 0, input: source }.parse_nodes();
+    let mut nodes = Parser {
+        pos: 0,
+        input: source,
+    }.parse_nodes();
 
     if nodes.len() == 1 {
         nodes.swap_remove(0)
@@ -17,6 +20,9 @@ pub struct Parser {
 }
 
 impl Parser {
+    // Generic parsing functions; this is used in css.rs as well
+    // and could be a candidate for moving into its own module
+
     fn next_char(&self) -> char {
         // TODO: look up the two dot `..` syntax
         self.input[self.pos..].chars().next().unwrap()
@@ -40,7 +46,9 @@ impl Parser {
 
     // this function evaluates consecutive chars while `test` fn == true
     fn consume_while<F>(&mut self, test: F) -> String
-    where F: Fn(char) -> bool {
+    where
+        F: Fn(char) -> bool,
+    {
         let mut result = String::new();
         while !self.end_of() && test(self.next_char()) {
             result.push(self.consume_char());
@@ -53,9 +61,9 @@ impl Parser {
     }
 
     fn parse_tag_name(&mut self) -> String {
-        self.consume_while(|c| match c{
+        self.consume_while(|c| match c {
             'a'...'z' | 'A'...'Z' | '0'...'9' => true,
-            _ => false
+            _ => false,
         })
     }
 
@@ -70,7 +78,7 @@ impl Parser {
         dom::make_text(self.consume_while(|c| c != '<'))
     }
 
-    // TODO: check if using `assert!` in this way is idiomatic; 
+    // TODO: check if using `assert!` in this way is idiomatic;
     // how else could I safely parse the brackets of the tags?
     fn parse_element(&mut self) -> dom::Node {
         assert!(self.consume_char() == '<');

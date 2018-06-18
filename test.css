@@ -1,0 +1,11 @@
+.level-0 {
+    border-width: 3px;
+    border-style: solid;
+    border-color: darkmagenta;
+}
+
+.level-1 {
+    border-width: 3px;
+    border-style: dotted;
+    border-color: blue;
+}
