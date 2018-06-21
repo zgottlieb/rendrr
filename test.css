@@ -1,11 +1,21 @@
 .level-0 {
+    background-color: purple;
     border-width: 3px;
     border-style: solid;
     border-color: darkmagenta;
 }
 
 .level-1 {
+    background-color: green;
     border-width: 3px;
     border-style: dotted;
     border-color: blue;
+}
+
+div {
+  background-color: yellow;
+}
+
+#root {
+  background-color: pink;
 }

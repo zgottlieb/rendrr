@@ -1,16 +1,16 @@
 #[derive(Debug)]
 pub struct Stylesheet {
-    rules: Vec<Rule>,
+    pub rules: Vec<Rule>,
 }
 
 #[derive(Debug)]
-struct Rule {
-    selectors: Vec<Selector>,
-    declarations: Vec<Declaration>,
+pub struct Rule {
+    pub selectors: Vec<Selector>,
+    pub declarations: Vec<Declaration>,
 }
 
 #[derive(Debug)]
-enum Selector {
+pub enum Selector {
     Simple(SimpleSelector),
 }
 
@@ -27,33 +27,33 @@ impl Selector {
     }
 }
 
-#[derive(Debug)]
-struct SimpleSelector {
-    tag_name: Option<String>,
-    id: Option<String>,
-    class: Vec<String>,
+#[derive(Debug, Clone)]
+pub struct SimpleSelector {
+    pub tag_name: Option<String>,
+    pub id: Option<String>,
+    pub class: Vec<String>,
 }
 
 #[derive(Debug)]
-struct Declaration {
-    property: String,
-    value: Value,
+pub struct Declaration {
+    pub property: String,
+    pub value: Value,
 }
 
-#[derive(Debug)]
-enum Value {
+#[derive(Debug, Clone)]
+pub enum Value {
     Keyword(String),
     Length(f32, Unit),
     ColorValue(Color),
 }
 
-#[derive(Debug)]
-enum Unit {
+#[derive(Debug, Clone)]
+pub enum Unit {
     Px,
 }
 
-#[derive(Debug)]
-struct Color {
+#[derive(Debug, Clone)]
+pub struct Color {
     r: u8,
     g: u8,
     b: u8,
