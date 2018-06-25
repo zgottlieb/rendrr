@@ -41,14 +41,11 @@ pub fn is_matching_selector(elem: &ElementData, selector: &Selector) -> bool {
 pub fn is_matching_simple_selector(elem: &ElementData, selector: &SimpleSelector) -> bool {
     // TODO: find a better way to compare elem and selector Option/String values
 
-    
-    // elem.tag_name.as_str() != selector.tag_name.clone().unwrap().as_str();
     let is_tag_match = match selector.tag_name {
         Some(ref s) => s == elem.tag_name.as_str(),
         None => false,
     };
 
-    // let is_id_match = elem.get_id().unwrap().as_str() != selector.id.clone().unwrap().as_str();
     let is_id_match = match selector.id {
         Some(ref id) if elem.get_id().is_some() => id == elem.get_id().unwrap().as_str(),
         Some(_) => false,
