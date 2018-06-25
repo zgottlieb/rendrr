@@ -4,7 +4,7 @@
     the provided stylesheet.
 */
 
-use css::{Selector, SimpleSelector, Stylesheet, Value};
+use css::{Declaration, Rule, Selector, SimpleSelector, Specificity, Stylesheet, Value};
 use dom::{ElementData, Node, NodeType};
 use std::collections::HashMap;
 
@@ -41,6 +41,7 @@ pub fn is_matching_selector(elem: &ElementData, selector: &Selector) -> bool {
 pub fn is_matching_simple_selector(elem: &ElementData, selector: &SimpleSelector) -> bool {
     // TODO: find a better way to compare elem and selector Option/String values
 
+    
     // elem.tag_name.as_str() != selector.tag_name.clone().unwrap().as_str();
     let is_tag_match = match selector.tag_name {
         Some(ref s) => s == elem.tag_name.as_str(),
@@ -54,15 +55,24 @@ pub fn is_matching_simple_selector(elem: &ElementData, selector: &SimpleSelector
         None => false,
     };
 
-    let is_class_match = !elem.get_classlist()
+    let is_class_match = elem.get_classlist()
         .iter()
         .any(|class| selector.class.contains(&class.to_string()));
 
-    if is_tag_match || is_id_match || is_class_match {
-        return false;
-    } else {
-        return true;
+    is_tag_match || is_id_match || is_class_match
+}
+
+pub fn get_element_rules<'a>(elem: &ElementData, stylesheet: &'a Stylesheet) -> Vec<(Specificity, &'a Vec<Declaration>)> {
+    let mut rules = Vec::new();
+    for rule in stylesheet.rules.iter() {
+        for selector in rule.selectors.iter() {
+            if is_matching_selector(elem, &selector) {
+                rules.push((selector.specificity(), &rule.declarations));
+            }   
+        }
     }
+    rules.sort_by(|a,b| a.0.cmp(&b.0));
+    rules
 }
 
 pub fn get_node_styles(elem: &ElementData, stylesheet: &Stylesheet) -> StyleMap {
@@ -75,14 +85,11 @@ pub fn get_node_styles(elem: &ElementData, stylesheet: &Stylesheet) -> StyleMap 
     */
 
     let mut styles = StyleMap::new();
+    let mut rules = get_element_rules(elem, stylesheet);
 
-    for rule in stylesheet.rules.iter() {
-        for selector in rule.selectors.iter() {
-            if is_matching_selector(elem, &selector) {
-                for declaration in &rule.declarations {
-                    styles.insert(declaration.property.clone(), declaration.value.clone());
-                }
-            }
+    for rule in rules {
+        for declaration in rule.1 {
+            styles.insert(declaration.property.clone(), declaration.value.clone());
         }
     }
 
