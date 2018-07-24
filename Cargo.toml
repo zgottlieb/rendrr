@@ -3,4 +3,38 @@ name = "rendrr"
 version = "0.1.0"
 authors = ["zgotts <zachg27@gmail.com>"]
 
+[features]
+default = []
+metal = ["gfx-backend-metal"]
+gl = ["gfx-backend-gl"]
+dx12 = ["gfx-backend-dx12"]
+vulkan = ["gfx-backend-vulkan"]
+unstable = []
+
 [dependencies]
+env_logger = "0.5"
+winit = "0.16"
+gfx = "0.17.1"
+gfx-hal = { path = "../../gfx-rs/gfx/src/hal/", version = "0.1" }
+
+[dependencies.gfx-backend-gl]
+path = "../../gfx-rs/gfx/src/backend/gl"
+version = "0.1"
+features = ["glutin"]
+optional = true
+
+[dependencies.gfx-backend-vulkan]
+path = "../../gfx-rs/gfx/src/backend/vulkan"
+version = "0.1"
+#features = ["glsl-to-spirv"]
+optional = true
+
+[target.'cfg(target_os = "macos")'.dependencies.gfx-backend-metal]
+path = "../../gfx-rs/gfx/src/backend/metal"
+version = "0.1"
+optional = true
+
+[target.'cfg(windows)'.dependencies.gfx-backend-dx12]
+path = "../../gfx-rs/gfx/src/backend/dx12"
+version = "0.1"
+optional = true
