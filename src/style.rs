@@ -4,7 +4,7 @@
     the provided stylesheet.
 */
 
-use css::{Declaration, Rule, Selector, SimpleSelector, Specificity, Stylesheet, Value};
+use css::{Declaration, Selector, SimpleSelector, Specificity, Stylesheet, Value};
 use dom::{ElementData, Node, NodeType};
 use std::collections::HashMap;
 
@@ -82,7 +82,7 @@ pub fn get_node_styles(elem: &ElementData, stylesheet: &Stylesheet) -> StyleMap 
     */
 
     let mut styles = StyleMap::new();
-    let mut rules = get_element_rules(elem, stylesheet);
+    let rules = get_element_rules(elem, stylesheet);
 
     for rule in rules {
         for declaration in rule.1 {
