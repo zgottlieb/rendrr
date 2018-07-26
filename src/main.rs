@@ -8,6 +8,7 @@ pub mod css;
 pub mod dom;
 pub mod html;
 pub mod style;
+pub mod layout;
 pub mod sdlbackend;
 
 use std::fs::File;
@@ -61,13 +62,19 @@ fn main() {
         None => { panic!("No CSS file selected") }
     };
 
+    let context = sdlbackend::init();
+    let window = sdlbackend::window(&context);
+    let mut viewport: layout::Dimensions = Default::default();
+    viewport.content.width  = 800.0;
+    viewport.content.height = 600.0;
+
     let html = parse_html(&html_file);
     let stylesheet = parse_css(&css_file);
     let style_tree = style::build_style_tree(&html, &stylesheet);
+    // let layout_root = layout::layout_tree(&style_root, viewport);
+    sdlbackend::render(&context, window);
 
     println!("{:#?}", html);
     println!("{:#?}", stylesheet);
     println!("{:#?}", style_tree);
-
-    sdlbackend::render()
 }
