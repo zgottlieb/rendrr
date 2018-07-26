@@ -5,3 +5,4 @@ authors = ["zgotts <zachg27@gmail.com>"]
 
 [dependencies]
 getopts = "0.2"
+sdl2 = "0.31"

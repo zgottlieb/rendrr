@@ -1,4 +1,6 @@
+extern crate sdl2;
 extern crate getopts;
+
 use getopts::Options;
 use std::env;
 
@@ -6,6 +8,7 @@ pub mod css;
 pub mod dom;
 pub mod html;
 pub mod style;
+pub mod sdlbackend;
 
 use std::fs::File;
 use std::io::prelude::*;
@@ -60,10 +63,11 @@ fn main() {
 
     let html = parse_html(&html_file);
     let stylesheet = parse_css(&css_file);
-
     let style_tree = style::build_style_tree(&html, &stylesheet);
 
     println!("{:#?}", html);
     println!("{:#?}", stylesheet);
     println!("{:#?}", style_tree);
+
+    sdlbackend::render()
 }
