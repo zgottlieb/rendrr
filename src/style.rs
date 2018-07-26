@@ -10,12 +10,19 @@ use std::collections::HashMap;
 
 type StyleMap = HashMap<String, Value>;
 
+#[derive(PartialEq)]
+pub enum Display {
+    Inline,
+    Block,
+    None,
+}
+
 #[derive(Debug)]
 pub struct StyledNode<'a> {
     // Needed to specify lifetime according to compiler; TODO: look up why that is necessary here
     node: &'a Node,
     styles: StyleMap,
-    children: Vec<StyledNode<'a>>,
+    pub children: Vec<StyledNode<'a>>,
 }
 
 pub fn build_style_tree<'a>(root: &'a Node, stylesheet: &'a Stylesheet) -> StyledNode<'a> {
@@ -91,4 +98,29 @@ pub fn get_node_styles(elem: &ElementData, stylesheet: &Stylesheet) -> StyleMap 
     }
 
     styles
+}
+
+impl<'a> StyledNode<'a> {
+    pub fn value(&self, name: &str) -> Option<Value> {
+        self.styles.get(name).cloned()
+    }
+
+    /// Return the specified value of property `name`, or property
+    /// `fallback_name` if that doesn't exist, or value `default` if
+    /// neither does.
+    pub fn lookup(&self, name: &str, fallback_name: &str, default: &Value) -> Value {
+        self.value(name).unwrap_or_else(|| self.value(fallback_name)
+                        .unwrap_or_else(|| default.clone()))
+    }
+
+    pub fn display(&self) -> Display {
+        match self.value("display") {
+            Some(Value::Keyword(s)) => match &*s {
+                "block" => Display::Block,
+                "none" => Display::None,
+                _ => Display::Inline
+            },
+            _ => Display::Inline
+        }
+    }
 }

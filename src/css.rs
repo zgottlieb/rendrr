@@ -40,19 +40,19 @@ pub struct Declaration {
     pub value: Value,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Value {
     Keyword(String),
     Length(f32, Unit),
     ColorValue(Color),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Unit {
     Px,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Color {
     r: u8,
     g: u8,
@@ -67,6 +67,16 @@ pub fn parse(source: String) -> Stylesheet {
     };
     Stylesheet {
         rules: parser.parse_rules(),
+    }
+}
+
+impl Value {
+    /// Return the size of a length in px, or zero for non-lengths.
+    pub fn to_px(&self) -> f32 {
+        match *self {
+            Value::Length(f, Unit::Px) => f,
+            _ => 0.0
+        }
     }
 }
 
