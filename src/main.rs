@@ -65,16 +65,18 @@ fn main() {
     let context = sdlbackend::init();
     let window = sdlbackend::window(&context);
     let mut viewport: layout::Dimensions = Default::default();
-    viewport.content.width  = 800.0;
-    viewport.content.height = 600.0;
+    let (width, height) = window.position();
+    viewport.content.width = width as f32;
+    viewport.content.height = height as f32;
 
     let html = parse_html(&html_file);
     let stylesheet = parse_css(&css_file);
     let style_tree = style::build_style_tree(&html, &stylesheet);
-    // let layout_root = layout::layout_tree(&style_root, viewport);
+    let layout_root = layout::layout_tree(&style_tree, viewport);
     sdlbackend::render(&context, window);
 
     println!("{:#?}", html);
     println!("{:#?}", stylesheet);
     println!("{:#?}", style_tree);
+    println!("{:#?}", layout_root);
 }
