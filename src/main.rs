@@ -75,11 +75,11 @@ fn main() {
     let style_tree = style::build_style_tree(&html, &stylesheet);
     let layout_root = layout::layout_tree(&style_tree, viewport);
     let display_list = painting::build_display_list(&layout_root);
-    sdlbackend::render(&context, window);
+    sdlbackend::render(&context, window, &display_list);
 
     // println!("{:#?}", html);
     // println!("{:#?}", stylesheet);
     // println!("{:#?}", style_tree);
     // println!("{:#?}", layout_root);
-    println!("{:#?}", display_list);
+    // println!("{:#?}", display_list);
 }
