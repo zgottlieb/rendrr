@@ -9,6 +9,7 @@ pub mod dom;
 pub mod html;
 pub mod style;
 pub mod layout;
+pub mod painting;
 pub mod sdlbackend;
 
 use std::fs::File;
@@ -73,10 +74,12 @@ fn main() {
     let stylesheet = parse_css(&css_file);
     let style_tree = style::build_style_tree(&html, &stylesheet);
     let layout_root = layout::layout_tree(&style_tree, viewport);
+    let display_list = painting::build_display_list(&layout_root);
     sdlbackend::render(&context, window);
 
-    println!("{:#?}", html);
-    println!("{:#?}", stylesheet);
-    println!("{:#?}", style_tree);
-    println!("{:#?}", layout_root);
+    // println!("{:#?}", html);
+    // println!("{:#?}", stylesheet);
+    // println!("{:#?}", style_tree);
+    // println!("{:#?}", layout_root);
+    println!("{:#?}", display_list);
 }
