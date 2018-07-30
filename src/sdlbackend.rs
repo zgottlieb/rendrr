@@ -5,9 +5,6 @@ use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::video::Window;
-
-use css;
-use layout;
 use painting::{DisplayCommand,DisplayList};
 
 pub fn init() -> Sdl {
@@ -42,8 +39,6 @@ pub fn render(context: &Sdl, window: Window, commands: &DisplayList) {
         for element in commands {
             let (color, rect) = match element {
                 DisplayCommand::SolidColor(color, rect) => (color, rect),
-                _ => (&css::Color { r: 0, g: 0, b: 0, a: 0 },
-                      &layout::Rect { x: 0.0, y: 0.0, width: 0.0, height: 0.0 }),
             };
 
             canvas.set_draw_color(Color::RGBA(color.r, color.g, color.b, color.a));
