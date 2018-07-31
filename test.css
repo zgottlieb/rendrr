@@ -1,8 +1,10 @@
 .level-0 {
-    background-color: purple;
+    display: block;
+    background-color: #e3e3e3;
     border-width: 3px;
     border-style: solid;
-    border-color: darkmagenta;
+    border-color: #ff00ee;
+    height: 200px;
 }
 
 .level-1 {
@@ -17,5 +19,9 @@ div {
 }
 
 #root {
-  background-color: pink;
+  background-color: #000000;
+}
+
+#root {
+  background-color: #ff9955;
 }
