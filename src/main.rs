@@ -3,6 +3,7 @@ extern crate getopts;
 
 use getopts::Options;
 use std::env;
+use std::path::Path;
 
 pub mod css;
 pub mod dom;
@@ -11,6 +12,7 @@ pub mod style;
 pub mod layout;
 pub mod painting;
 pub mod sdlbackend;
+pub mod text;
 
 use std::fs::File;
 use std::io::prelude::*;
@@ -41,6 +43,7 @@ fn main() {
     let mut opts = Options::new();
     opts.optopt("H", "html", "Input HTML file name", "HTML");
     opts.optopt("c", "css", "Input CSS file name", "CSS");
+    opts.optopt("f", "fontpath", "Input font file path", "FONT");
     opts.optflag("h", "help", "print this help menu");
 
     let matches = match opts.parse(&args[1..]) {
@@ -63,6 +66,11 @@ fn main() {
         None => { panic!("No CSS file selected") }
     };
 
+    let font_file = match matches.opt_str("f") {
+        Some(x) => { x },
+        None => { panic!("No font file selected") },
+    };
+
     let context = sdlbackend::init();
     let window = sdlbackend::window(&context);
     let mut viewport: layout::Dimensions = Default::default();
@@ -75,9 +83,10 @@ fn main() {
     let style_tree = style::build_style_tree(&html, &stylesheet);
     let layout_root = layout::layout_tree(&style_tree, viewport);
     let display_list = painting::build_display_list(&layout_root);
-    sdlbackend::render(&context, window, &display_list);
+    sdlbackend::render(&context, window, &display_list, Path::new(&font_file));
+    // text::run(context, Path::new(&font_file));
 
-    // println!("{:#?}", html);
+    println!("{:#?}", html);
     // println!("{:#?}", stylesheet);
     // println!("{:#?}", style_tree);
     // println!("{:#?}", layout_root);

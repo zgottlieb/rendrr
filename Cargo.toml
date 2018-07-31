@@ -5,4 +5,8 @@ authors = ["zgotts <zachg27@gmail.com>"]
 
 [dependencies]
 getopts = "0.2"
-sdl2 = "0.31"
+
+[dependencies.sdl2]
+version = "0.31"
+default-features = false
+features = ["ttf"]
