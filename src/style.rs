@@ -20,8 +20,8 @@ pub enum Display {
 #[derive(Debug)]
 pub struct StyledNode<'a> {
     // Needed to specify lifetime according to compiler; TODO: look up why that is necessary here
-    node: &'a Node,
-    styles: StyleMap,
+    pub node: &'a Node,
+    pub styles: StyleMap,
     pub children: Vec<StyledNode<'a>>,
 }
 

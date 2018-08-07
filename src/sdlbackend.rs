@@ -24,7 +24,7 @@ pub fn window(context: &Sdl) -> Window {
         .unwrap();
 }
 
-pub fn render(context: &Sdl, window: Window, commands: &DisplayList, font_path: &Path) {
+pub fn render(context: &Sdl, window: Window, commands: &DisplayList) {
     let mut canvas = window.into_canvas().present_vsync().build().unwrap();
     let mut event_pump = context.event_pump().unwrap();
 
@@ -42,21 +42,24 @@ pub fn render(context: &Sdl, window: Window, commands: &DisplayList, font_path: 
         canvas.clear();
 
         for element in commands {
-            let (color, rect) = match element {
-                DisplayCommand::SolidColor(color, rect) => (color, rect),
-            };
+            match element {
+                DisplayCommand::SolidColor(color, rect) => {
+                    canvas.set_draw_color(Color::RGBA(color.r, color.g, color.b, color.a));
 
-            canvas.set_draw_color(Color::RGBA(color.r, color.g, color.b, color.a));
-
-            canvas.fill_rect(Rect::new(
-                rect.x as i32,
-                rect.y as i32,
-                rect.width as u32,
-                rect.height as u32
-            )).unwrap();
+                    canvas.fill_rect(Rect::new(
+                        rect.x as i32,
+                        rect.y as i32,
+                        rect.width as u32,
+                        rect.height as u32
+                    )).unwrap();
+                },
+                DisplayCommand::Text(text, font_path) => {
+                    render_text_to_canvas(text, Path::new(&font_path), &mut canvas)
+                }
+            }  
         }
 
-        render_text_to_canvas("Rendering text from SDLBackend!", font_path, &mut canvas);
+        // render_text_to_canvas("Rendering text from SDLBackend!", font_path, &mut canvas);
         canvas.present();
     }
 }

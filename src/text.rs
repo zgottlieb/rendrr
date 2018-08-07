@@ -1,4 +1,4 @@
-// THIS IS TAKEN FROM rust-sdl2/examples/ttf-demo.rs
+ // THIS IS TAKEN FROM rust-sdl2/examples/ttf-demo.rs
 
 extern crate sdl2;
 
@@ -53,6 +53,8 @@ pub fn render_text_to_canvas(text: &str, font_path: &Path, canvas: &mut sdl2::re
     // Load a font
     let mut font = ttf_context.load_font(font_path, 128).unwrap();
     font.set_style(sdl2::ttf::STYLE_BOLD);
+
+    // println!("size of font: {:?}", font.size_of(text));
     
     // render a surface, and convert it to a texture bound to the canvas
     let surface = font.render(text)

@@ -1,9 +1,12 @@
-use layout::{AnonymousBlock, BlockNode, InlineNode, LayoutBox, Rect};
+use layout::{AnonymousBlock, BlockNode, InlineNode, LayoutBox, BoxType, Rect};
 use css::{Value, Color};
+use std::path::Path;
+use dom::NodeType;
 
 #[derive(Debug)]
 pub enum DisplayCommand {
     SolidColor(Color, Rect),
+    Text(String, String),
 }
 
 pub type DisplayList = Vec<DisplayCommand>;
@@ -17,6 +20,19 @@ pub fn build_display_list(layout_root: &LayoutBox) -> DisplayList {
 fn render_layout_box(list: &mut DisplayList, layout_box: &LayoutBox) {
     render_background(list, layout_box);
     render_borders(list, layout_box);
+
+    // If layout_box contains Text node, and if Node is of type Text, and  then render_text()
+    if let BoxType::InlineNode(styled_node) = layout_box.box_type {
+        if let NodeType::Text(ref text) = styled_node.node.node_type {
+            // TODO: Implement parsing of font/font-family
+            let font_style = styled_node.lookup("font", "font-family", &Value::Keyword("old-english".to_owned()));
+            if let Value::Keyword(mut font) = font_style {
+                font.push_str(".ttf"); // TODO: Look up font in filesystem and use extension of found file
+                list.push(DisplayCommand::Text(text.to_string(), font));
+            }
+        }
+    }
+
     for child in &layout_box.children {
         render_layout_box(list, child);
     }

@@ -42,7 +42,7 @@ pub struct Declaration {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Value {
-    Keyword(String),
+    Keyword(String), // Note: this is also being used for fonts
     Length(f32, Unit),
     ColorValue(Color),
 }
