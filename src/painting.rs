@@ -1,12 +1,13 @@
 use layout::{AnonymousBlock, BlockNode, InlineNode, LayoutBox, BoxType, Rect};
 use css::{Value, Color};
-use std::path::Path;
+use std::path::PathBuf;
 use dom::NodeType;
+use text::get_text_size;
 
 #[derive(Debug)]
 pub enum DisplayCommand {
     SolidColor(Color, Rect),
-    Text(String, String),
+    Text(String, PathBuf, Rect),
 }
 
 pub type DisplayList = Vec<DisplayCommand>;
@@ -18,17 +19,28 @@ pub fn build_display_list(layout_root: &LayoutBox) -> DisplayList {
 }
 
 fn render_layout_box(list: &mut DisplayList, layout_box: &LayoutBox) {
+
     render_background(list, layout_box);
     render_borders(list, layout_box);
 
     // If layout_box contains Text node, and if Node is of type Text, and  then render_text()
+    // TODO: Find a better location for this / refactor for reusability (a similar pattern is used in layout.rs)
     if let BoxType::InlineNode(styled_node) = layout_box.box_type {
         if let NodeType::Text(ref text) = styled_node.node.node_type {
-            // TODO: Implement parsing of font/font-family
+
+            // TODO: Implement parsing of font/font-family attributes in CSS
+            // TODO: set default value (e.g. "old-english") based on default font passed in as argument
             let font_style = styled_node.lookup("font", "font-family", &Value::Keyword("old-english".to_owned()));
-            if let Value::Keyword(mut font) = font_style {
-                font.push_str(".ttf"); // TODO: Look up font in filesystem and use extension of found file
-                list.push(DisplayCommand::Text(text.to_string(), font));
+
+            if let Value::Keyword(mut font_name) = font_style {
+                let mut font_path = PathBuf::new();
+                font_path.push(font_name);
+                font_path.set_extension("ttf"); // TODO: Look up font in filesystem and use extension of found file
+                
+                let mut rect = layout_box.dimensions.border_box();
+                rect.height = rect.height + get_text_size(text, font_path.as_path()).1 as f32;
+                
+                list.push(DisplayCommand::Text(text.to_string(), font_path, rect));
             }
         }
     }

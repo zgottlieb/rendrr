@@ -1,100 +1,50 @@
- // THIS IS TAKEN FROM rust-sdl2/examples/ttf-demo.rs
-
 extern crate sdl2;
 
-use std::env;
 use std::path::Path;
+use std::path::PathBuf;
 
-use sdl2::Sdl;
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
 use sdl2::rect::Rect;
-use sdl2::render::TextureQuery;
 use sdl2::pixels::Color;
 
-static SCREEN_WIDTH : u32 = 800;
-static SCREEN_HEIGHT : u32 = 600;
+static FONT_SIZE: u16 = 26;
+static FONT_STYLE: sdl2::ttf::FontStyle = sdl2::ttf::STYLE_BOLD;
 
 // handle the annoying Rect i32
+// Taken from rust-sdl2/examples/ttf-demo.rs
 macro_rules! rect(
     ($x:expr, $y:expr, $w:expr, $h:expr) => (
         Rect::new($x as i32, $y as i32, $w as u32, $h as u32)
     )
 );
 
-// Scale fonts to a reasonable size when they're too big (though they might look less smooth)
-fn get_centered_rect(rect_width: u32, rect_height: u32, cons_width: u32, cons_height: u32) -> Rect {
-    let wr = rect_width as f32 / cons_width as f32;
-    let hr = rect_height as f32 / cons_height as f32;
-
-    let (w, h) = if wr > 1f32 || hr > 1f32 {
-        if wr > hr {
-            println!("Scaling down! The text will look worse!");
-            let h = (rect_height as f32 / wr) as i32;
-            (cons_width as i32, h)
-        } else {
-            println!("Scaling down! The text will look worse!");
-            let w = (rect_width as f32 / hr) as i32;
-            (w, cons_height as i32)
-        }
-    } else {
-        (rect_width as i32, rect_height as i32)
-    };
-
-    let cx = (SCREEN_WIDTH as i32 - w) / 2;
-    let cy = (SCREEN_HEIGHT as i32 - h) / 2;
-    rect!(cx, cy, w, h)
+pub fn get_text_size(text: &str, font_path: &Path) -> (u32, u32) {
+    // Creating a context and loading a font here may be suboptimal;
+    // we already need to load the font in render_text_to_canvas, so
+    // there may be a way to preload the font and use it as needed
+    
+    let ttf_context = sdl2::ttf::init().unwrap();
+    let font = ttf_context.load_font(font_path, FONT_SIZE).unwrap();
+    font.size_of(text).unwrap()
 }
 
-pub fn render_text_to_canvas(text: &str, font_path: &Path, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
+pub fn render_text_to_canvas(text: &str, font_path: &PathBuf, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>, rect: Rect) {
     let ttf_context = sdl2::ttf::init().unwrap();
-    let texture_creator = canvas.texture_creator();
 
-    // Load a font
-    let mut font = ttf_context.load_font(font_path, 128).unwrap();
-    font.set_style(sdl2::ttf::STYLE_BOLD);
+    let font = ttf_context.load_font(font_path.as_path(), FONT_SIZE).unwrap();
+    // font.set_style(FONT_STYLE);
 
-    // println!("size of font: {:?}", font.size_of(text));
+    let (font_width, font_height) = font.size_of(text).unwrap();
     
+    // create the target destination for the texture
+    let target = rect!(rect.x, rect.y, font_width, font_height);
+
     // render a surface, and convert it to a texture bound to the canvas
     let surface = font.render(text)
-        .blended(Color::RGBA(255, 0, 0, 255)).unwrap();
+                    .blended(Color::RGBA(0, 255, 0, 255))
+                    .unwrap();
+        
+    let texture_creator = canvas.texture_creator();
     let texture = texture_creator.create_texture_from_surface(&surface).unwrap();
 
-    // canvas.set_draw_color(Color::RGBA(195, 217, 255, 255));
-    // canvas.clear();
-
-    let TextureQuery { width, height, .. } = texture.query();
-
-    // If the example text is too big for the screen, downscale it (and center irregardless)
-    let padding = 64;
-    let target = get_centered_rect(width, height, SCREEN_WIDTH - padding, SCREEN_HEIGHT - padding);
-
     canvas.copy(&texture, None, Some(target)).unwrap();
-}
-
-pub fn run(sdl_context: Sdl, font_path: &Path) {
-    // let sdl_context = sdl2::init().unwrap();
-    let video_subsys = sdl_context.video().unwrap();
-    
-    let window = video_subsys.window("SDL2_TTF Example", SCREEN_WIDTH, SCREEN_HEIGHT)
-        .position_centered()
-        .opengl()
-        .build()
-        .unwrap();
-
-    let mut canvas = window.into_canvas().build().unwrap();
-    
-    render_text_to_canvas("Hello Rust! TWO", font_path, &mut canvas);
-    canvas.present();
-
-    'mainloop: loop {
-        for event in sdl_context.event_pump().unwrap().poll_iter() {
-            match event {
-                Event::KeyDown {keycode: Some(Keycode::Escape), ..} |
-                Event::Quit {..} => break 'mainloop,
-                _ => {}
-            }
-        }
-    }
 }

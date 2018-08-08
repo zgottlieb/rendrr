@@ -4,6 +4,9 @@ use style::{StyledNode, Display};
 use css::Value::{Keyword, Length};
 use css::Unit::Px;
 use std::default::Default;
+use dom::NodeType;
+use text::get_text_size;
+use std::path::PathBuf;
 
 pub use self::BoxType::{AnonymousBlock, InlineNode, BlockNode};
 
@@ -103,7 +106,9 @@ impl<'a> LayoutBox<'a> {
     fn layout(&mut self, containing_block: Dimensions) {
         match self.box_type {
             BlockNode(_) => self.layout_block(containing_block),
-            InlineNode(_) | AnonymousBlock => {} // TODO
+            InlineNode(_) | AnonymousBlock => self.layout_inline(containing_block),
+            // NOTE: Using self.layout_inline() for AnonymousBlock layout is a temporary shortcut!
+            // TODO: Handle AnonymousBlock layout properly
         }
     }
 
@@ -246,6 +251,7 @@ impl<'a> LayoutBox<'a> {
     /// Sets `self.dimensions.height` to the total content height.
     fn layout_block_children(&mut self) {
         let d = &mut self.dimensions;
+
         for child in &mut self.children {
             child.layout(*d);
             // Increment the height so each child is laid out below the previous one.
@@ -259,6 +265,50 @@ impl<'a> LayoutBox<'a> {
         // Otherwise, just keep the value set by `layout_block_children`.
         if let Some(Length(h, Px)) = self.get_style_node().value("height") {
             self.dimensions.content.height = h;
+        }
+    }
+
+    // FUNCTIONS FOR INLINE LAYOUT
+
+    fn layout_inline(&mut self, containing_block: Dimensions) {
+        self.calculate_inline_position(containing_block);
+        
+        self.layout_inline_children();
+
+        self.calculate_inline_height();
+    }
+
+    // Sets height for inline nodes that contain text
+    fn calculate_inline_height(&mut self) {
+        if let BoxType::InlineNode(styled_node) = self.box_type {
+            if let NodeType::Text(ref text) = styled_node.node.node_type {
+                // TODO: Implement parsing of font/font-family attributes in CSS
+                // TODO: set default value (e.g. "old-english") based on default font passed in as argument
+                let font_style = styled_node.lookup("font", "font-family", &Keyword("old-english".to_owned()));
+
+                if let Keyword(mut font_name) = font_style {
+                    let mut font_path = PathBuf::new();
+                    font_path.push(font_name);
+                    font_path.set_extension("ttf");
+
+                    self.dimensions.content.height = get_text_size(text, font_path.as_path()).1 as f32;
+                }
+            }
+        }
+    }
+
+    fn calculate_inline_position(&mut self, containing_block: Dimensions) {
+        let d = &mut self.dimensions;
+
+        d.content.x = containing_block.content.x;
+        d.content.y = containing_block.content.y + containing_block.content.height;
+    }
+
+    fn layout_inline_children(&mut self) {
+        let d = &mut self.dimensions;
+        for child in &mut self.children {
+            child.layout(*d);
+            d.content.height = d.content.height + child.dimensions.margin_box().height;
         }
     }
 
@@ -277,6 +327,8 @@ impl<'a> LayoutBox<'a> {
             }
         }
     }
+
+
 }
 
 impl Rect {

@@ -1,5 +1,3 @@
-use std::path::Path;
-
 use sdl2;
 use sdl2::Sdl;
 use sdl2::rect::Rect;
@@ -53,13 +51,12 @@ pub fn render(context: &Sdl, window: Window, commands: &DisplayList) {
                         rect.height as u32
                     )).unwrap();
                 },
-                DisplayCommand::Text(text, font_path) => {
-                    render_text_to_canvas(text, Path::new(&font_path), &mut canvas)
+                DisplayCommand::Text(text, font_path, rect) => {
+                    render_text_to_canvas(text, font_path, &mut canvas, sdl2::rect::Rect::new(rect.x as i32, rect.y as i32, rect.width as u32, rect.height as u32));
                 }
             }  
         }
 
-        // render_text_to_canvas("Rendering text from SDLBackend!", font_path, &mut canvas);
         canvas.present();
     }
 }
