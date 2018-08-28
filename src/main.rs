@@ -42,7 +42,6 @@ fn main() {
     let mut opts = Options::new();
     opts.optopt("H", "html", "Input HTML file name", "HTML");
     opts.optopt("c", "css", "Input CSS file name", "CSS");
-    opts.optopt("f", "fontpath", "Input font file path", "FONT");
     opts.optflag("h", "help", "print this help menu");
 
     let matches = match opts.parse(&args[1..]) {
@@ -65,15 +64,11 @@ fn main() {
         None => { panic!("No CSS file selected") }
     };
 
-    let font_file = match matches.opt_str("f") {
-        Some(x) => { x },
-        None => { panic!("No font file selected") },
-    };
-
     let context = sdlbackend::init();
     let window = sdlbackend::window(&context);
     let mut viewport: layout::Dimensions = Default::default();
-    let (width, height) = window.position();
+    let (width, height) = window.size();
+    
     viewport.content.width = width as f32;
     viewport.content.height = height as f32;
 
