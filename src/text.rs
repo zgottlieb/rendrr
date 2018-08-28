@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use sdl2::rect::Rect;
 use sdl2::pixels::Color;
 
-static FONT_SIZE: u16 = 26;
+static FONT_SIZE: u16 = 50;
 static FONT_STYLE: sdl2::ttf::FontStyle = sdl2::ttf::STYLE_BOLD;
 
 // handle the annoying Rect i32

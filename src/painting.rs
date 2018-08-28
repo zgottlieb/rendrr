@@ -4,10 +4,12 @@ use std::path::PathBuf;
 use dom::NodeType;
 use text::get_text_size;
 
+type FontPath = PathBuf;
+
 #[derive(Debug)]
 pub enum DisplayCommand {
     SolidColor(Color, Rect),
-    Text(String, PathBuf, Rect),
+    Text(String, FontPath, Rect),
 }
 
 pub type DisplayList = Vec<DisplayCommand>;

@@ -16,7 +16,7 @@ pub fn init() -> Sdl {
 pub fn window(context: &Sdl) -> Window {
     let video_subsystem = context.video().unwrap();
     return video_subsystem
-        .window("A browser?", 640, 480)
+        .window("A browser?", 1000, 800)
         .resizable()
         .build()
         .unwrap();

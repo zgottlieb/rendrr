@@ -21,16 +21,6 @@ pub struct Rect {
 }
 
 #[derive(Clone, Copy, Default, Debug)]
-pub struct Dimensions {
-    /// Position of the content area relative to the document origin:
-    pub content: Rect,
-    // Surrounding edges:
-    pub padding: EdgeSizes,
-    pub border: EdgeSizes,
-    pub margin: EdgeSizes,
-}
-
-#[derive(Clone, Copy, Default, Debug)]
 pub struct EdgeSizes {
     pub left: f32,
     pub right: f32,
@@ -51,6 +41,14 @@ pub enum BoxType<'a> {
     BlockNode(&'a StyledNode<'a>),
     InlineNode(&'a StyledNode<'a>),
     AnonymousBlock,
+}
+
+#[derive(Clone, Copy, Default, Debug)]
+pub struct Dimensions {
+    pub content: Rect,
+    pub padding: EdgeSizes,
+    pub border: EdgeSizes,
+    pub margin: EdgeSizes,
 }
 
 impl<'a> LayoutBox<'a> {
