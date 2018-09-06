@@ -1,21 +1,23 @@
+div {
+  display: block;
+  padding: 10px;
+  border-width: 3px;
+  border-color: #ff00ee;
+}
+
 .level-0 {
-    background-color: purple;
-    border-width: 3px;
-    border-style: solid;
-    border-color: darkmagenta;
+  background-color: #ff0000;
 }
 
 .level-1 {
-    background-color: green;
-    border-width: 3px;
-    border-style: dotted;
-    border-color: blue;
+  background-color: #000000;
 }
 
-div {
-  background-color: yellow;
+.level-2 {
+  background-color: #5300be;
 }
 
 #root {
-  background-color: pink;
+  background-color: #012c7c;
 }
+

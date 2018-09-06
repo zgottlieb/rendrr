@@ -136,3 +136,7 @@ impl Parser {
         return nodes;
     }
 }
+
+#[cfg(test)]
+#[path = "./html_test.rs"]
+mod html_test;

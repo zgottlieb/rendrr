@@ -4,3 +4,9 @@ version = "0.1.0"
 authors = ["zgotts <zachg27@gmail.com>"]
 
 [dependencies]
+getopts = "0.2"
+
+[dependencies.sdl2]
+version = "0.31"
+default-features = false
+features = ["ttf"]
