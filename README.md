@@ -11,16 +11,35 @@ Current working features of rendrr include:
 - render text and color (borders, font colors, background colors)
 - render to OS window (using SDL2)
 
-## How to run
+## Setup & Installation
 
-1. If you do not have Rust installed on your machine follow these instructions for installation: https://rustup.rs/. Otherwise, skip to step 2.
-2. Clone or fork this repo onto your local machine.
-3. Run the program using Cargo, the package manager and build system for Rust that comes packaged with rustup. Enter this command into your terminal:
+This project requires [Rust](https://www.rust-lang.org/tools/install) and SDL2 + SDL2_ttf libraries.
 
-   `cargo run -- --html example/index.html --css example/index.css`
+### 1. Install Dependencies
 
-4. This command should produce the following screenshot:
-   ![rendrr example screenshot](example/rendrr-example-screenshot-updated.png 'Rendered HTML and CSS!')
+```bash
+brew install sdl2 sdl2_ttf pkg-config
+```
+
+### 2. Set up environment variables (necessary for Apple Silicon)
+
+```bash
+export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig"
+export LIBRARY_PATH="$LIBRARY_PATH:$(brew --prefix)/lib"
+```
+
+To make this permanent, add to ~/.zshrc or ~/.bash_profile.
+
+### 3. Clone and run
+
+Clone the repository. Then run with the following command:
+
+```bash
+cargo run -- --html example/index.html --css example/index.css
+```
+
+This command should produce the following screenshot:
+![rendrr example screenshot](example/rendrr-example-screenshot-updated.png 'Rendered HTML and CSS!')
 
 ## Important notes
 
