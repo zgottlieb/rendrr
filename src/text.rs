@@ -5,9 +5,10 @@ use std::path::PathBuf;
 
 use sdl2::rect::Rect;
 use sdl2::pixels::Color;
+// use sdl2::ttf::FontStyle;
 
 static FONT_SIZE: u16 = 50;
-static FONT_STYLE: sdl2::ttf::FontStyle = sdl2::ttf::STYLE_BOLD;
+// static FONT_STYLE: FontStyle = FontStyle::BOLD;
 
 // handle the annoying Rect i32
 // Taken from rust-sdl2/examples/ttf-demo.rs
@@ -40,7 +41,7 @@ pub fn render_text_to_canvas(text: &str, font_path: &PathBuf, canvas: &mut sdl2:
 
     // render a surface, and convert it to a texture bound to the canvas
     let surface = font.render(text)
-                    .blended(Color::RGBA(0, 255, 0, 255))
+                    .blended(Color::RGBA(0, 0, 0, 255))
                     .unwrap();
         
     let texture_creator = canvas.texture_creator();

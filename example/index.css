@@ -1,12 +1,10 @@
 div {
   display: block;
   padding: 10px;
-  border-width: 3px;
-  border-color: #ff00ee;
 }
 
 .level-0 {
-  background-color: #ff0000;
+  background-color: #998e8e;
 }
 
 .level-1 {
@@ -14,10 +12,14 @@ div {
 }
 
 .level-2 {
-  background-color: #5300be;
+  background-color: #303faf;
+}
+
+.border-red {
+  border-width: 3px;
+  border-color: #ff0000;
 }
 
 #root {
-  background-color: #012c7c;
+  background-color: #c2c2c2;
 }
-

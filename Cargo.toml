@@ -7,6 +7,6 @@ authors = ["zgotts <zachg27@gmail.com>"]
 getopts = "0.2"
 
 [dependencies.sdl2]
-version = "0.31"
+version = "0.37"
 default-features = false
 features = ["ttf"]

@@ -31,10 +31,10 @@ fn render_layout_box(list: &mut DisplayList, layout_box: &LayoutBox) {
         if let NodeType::Text(ref text) = styled_node.node.node_type {
 
             // TODO: Implement parsing of font/font-family attributes in CSS
-            // TODO: set default value (e.g. "old-english") based on default font passed in as argument
-            let font_style = styled_node.lookup("font", "font-family", &Value::Keyword("old-english".to_owned()));
+            // TODO: set default value (e.g. "MonoRegular") based on default font passed in as argument
+            let font_style = styled_node.lookup("font", "font-family", &Value::Keyword("MonoRegular".to_owned()));
 
-            if let Value::Keyword(mut font_name) = font_style {
+            if let Value::Keyword(font_name) = font_style {
                 let mut font_path = PathBuf::new();
                 font_path.push(font_name);
                 font_path.set_extension("ttf"); // TODO: Look up font in filesystem and use extension of found file
