@@ -1,0 +1,25 @@
+div {
+  display: block;
+  padding: 10px;
+}
+
+.level-0 {
+  background-color: #998e8e;
+}
+
+.level-1 {
+  background-color: #000000;
+}
+
+.level-2 {
+  background-color: #303faf;
+}
+
+.border-red {
+  border-width: 3px;
+  border-color: #ff0000;
+}
+
+#root {
+  background-color: #c2c2c2;
+}
